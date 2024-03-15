@@ -1,0 +1,179 @@
+// creamos las varibales que podemos reutilizar.
+// guardamos los datos en la variable para despues aplicarlo.
+// para que esto compile tenemos que abrir la consola desde la ubicacion del archivo
+// y escribir el siguiente codigo:  sass --watch stylos.scss styles.css
+// llamamos a sass, el --watch es para que siempre este revisando para compilar, le decimos donde esta el codigo sass, y despues el nombre del archivo que queremos que cree css.
+$fuente-tipica: sans-serif, Helvetica, Arial;
+$color-fondo:#ccc;
+$color-letra: red;
+$color-secundario: rgb(105, 5, 5);
+// en SASS podemos tener archivos separados dedicados a cada parte de la web
+// luego llamarlos conn un import
+//aplicando las variables
+body{
+    background-color: $color-fondo;
+}
+h1{
+    font-family: $fuente-tipica;
+    color: $color-letra;
+}
+p{
+    color:$color-secundario;
+}
+//vemos la anidacion de Sass 
+.caja{
+    border: 1px solid black;
+    width: 500px;
+    margin: 0px auto;
+    text-align: center;
+    background-color: white;
+    padding: 10px;
+    h2{
+        color: blue;
+    }
+    p{
+        color: green;
+    }
+    .info{
+        font-size: 10px;
+
+        .author{
+            font-size: 15px;
+            color: orange;
+        }
+    }
+}
+
+// Mixins / Funciones
+//Mixins basicamente son instrucciones que se ejecutan cuando los llame
+
+// creamos este Mixin/Funcion
+// es un conjunto de instrucciones guardadas baja un mismo nombre
+// que cuando yo llame por ejemplo a (crearBorder) se va a ejecutar y aplicar esas instrucciones.
+// para aplicarlo utilizo el @include crearBorder(); asi seria en este caso
+// lo llamamos en el modulo que lo queremos aplicar en este caso en _base
+
+/* Esta es la primera forma del mixin/funcion   
+@mixin crearBordes(){
+    border: 5px solid red;
+    border-radius: 10px;
+    box-shadow: 0px 0px 5px black;
+}
+
+.caja{
+    @include crearBordes();
+}
+// es una funcion, porque la podemos reutilizar cuantas veces yo quiera
+.listado{
+    @include crearBordes();
+}
+*/
+// Segunda opcion le damos parametros: 
+@mixin crearBordes($color, $size, $shadow){
+    border: $size solid $color;
+    border-radius: $size;
+    box-shadow: 0px 0px $size $shadow;
+}
+
+.caja{
+    @include crearBordes(red, 10px, black);
+}
+// es una funcion, porque la podemos reutilizar cuantas veces yo quiera
+.listado{
+    @include crearBordes(green, 5px, yellow);
+}
+
+
+
+// HERENCIA
+%alert-normal{
+    border: 1px solid gray;
+    background: #eee;
+    color: gray;
+    padding: 10px;
+    width: 80%;
+    margin: 20px auto;
+}
+// heredamos los estilos basicos de las reglas bases
+.alert{
+    @extend %alert-normal;
+}
+.alert-danger{
+    @extend %alert-normal;
+    color: red;
+    border-color: red;
+}
+.alert-success{
+    @extend %alert-normal;
+    color: green;
+    border-color: green;
+}
+
+// OPERADORES
+// operaciones matematicas al codigo
+.clearfix{
+    clear: both;
+}
+h1{
+    font-size: 20px + 5px -1px;
+}
+// variables de las cajas
+//tamaño de la caja
+$caja: 200px;
+//tamaño del contenedor de las cajas
+$wrap: 900px;
+.cajas{
+    width: $wrap;
+    margin: 0px auto;
+}
+.caja{
+    float: left;
+    // lo que hacemos es volver la medida en porcentaje en vez de darle la medida a ojo
+    width: $caja / $wrap * 100%;
+    margin: 10px;
+}
+
+
+// CONDICIONALES 
+
+// VEMOS EL IF 
+// significa que si sucede algo se ejecute otra cosa
+// recordemos que a las variables le podemos cambiar su valor
+// en este caso es para saber si esta funcionando el condicional
+//$color-fondo: orange;
+//$color-fondo: black;
+//$color-fondo: white;
+h1{
+    // si el color de fondo es igual a #ccc
+    @if $color-fondo == #ccc {
+        // pues entonces el color del texto debe ser:
+        color: black;
+    // tambien podemos hacer un else if y tener varios "si pasa esto hacer esto" 
+    // si el color de fondo es igual a black
+    } @else if $color-fondo == black {
+        color: lightsalmon;
+    }
+    @else {
+    // y si no se cumple, que entonces sea: 
+    color: pink;
+    }
+}
+
+
+// BUCLES
+
+// BUCLE FOR
+//variable
+$contador: 1;
+// from (desde el 1) through(hasta el 10)
+@for $contador from 1 through 10{
+    
+    .listado ul li:nth-child(#{$contador}){
+        //$contador vale 1, @for es un bucle, le estamos diciendo que
+        // con :nth-child tome desde el primer elemento y aparti de ahi
+        // cuente hasta 10 y los agarre y les aplique los estilos de manera automatica.
+        color: orange;
+        // le estamos diciendo que $contador que vale 10 le multiplique 5px y ese es el nuevo tamaño de la letra
+        font-size: $contador * 5px;
+    }
+}
